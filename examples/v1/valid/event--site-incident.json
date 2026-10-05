@@ -1,0 +1,20 @@
+{
+  "spec_version": "1.0",
+  "event_id": "01928f3a-0000-7a00-8000-000000000007",
+  "event_type": "site.incident",
+  "occurred_at": "2026-10-02T11:20:00+05:00",
+  "source": {
+    "system": "buildops",
+    "system_version": "2.0.10"
+  },
+  "organization": {
+    "stir": "305123456"
+  },
+  "site_id": "obyekt-17",
+  "data": {
+    "kind": "material_shortage",
+    "severity": "medium",
+    "happened_at": "2026-10-02T10:00:00+05:00",
+    "description": "Beton zavodi yetkazib berishni 2 kunga kechiktirdi, quyish to'xtatildi."
+  }
+}

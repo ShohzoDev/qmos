@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qmos"
+version = "1.0.0"
+description = "QMOS - Qurilish Monitoringi Ochiq Standarti: sxemalar, tekshiruv va imzo"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "jsonschema>=4.18",
+    "referencing>=0.30",
+]
+
+[project.optional-dependencies]
+dev = ["PyYAML>=6"]
+
+[tool.setuptools.packages.find]
+include = ["qmos*"]
+
+[tool.setuptools.package-data]
+qmos = ["schemas/v1/*.json"]

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Hodisalar to'plami (so'rov)",
+  "description": "POST /v1/events so'rovi tanasi. Har bir hodisa ALOHIDA qabul qilinadi yoki rad etiladi — bittasining xatosi boshqalarini to'xtatmaydi.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["events"],
+  "properties": {
+    "events": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 500,
+      "items": {"$ref": "event.json"}
+    }
+  }
+}

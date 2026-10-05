@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "site.profile — obyekt pasporti",
+  "description": "Obyektning to'liq pasporti. Har safar TO'LIQ holati yuboriladi (qisman emas); markaz eng oxirgisini joriy deb oladi. Obyekt birinchi marta shu hodisa bilan ro'yxatga olinadi — boshqa hodisalar undan oldin kelsa rad etiladi.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "category", "address", "location", "customer", "planned_start", "planned_end"],
+  "properties": {
+    "name": {"type": "string", "minLength": 1, "maxLength": 300, "description": "Obyekt nomi."},
+    "category": {
+      "type": "string",
+      "enum": [
+        "building_residential",
+        "building_public",
+        "building_industrial",
+        "road",
+        "bridge",
+        "utility_network",
+        "irrigation",
+        "landscaping",
+        "other"
+      ],
+      "description": "Obyekt turi: turar-joy binosi, ijtimoiy bino, sanoat binosi, yo'l, ko'prik, muhandislik tarmoqlari, irrigatsiya, obodonlashtirish, boshqa."
+    },
+    "address": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["region_soato", "district_soato"],
+      "properties": {
+        "region_soato": {"$ref": "common.json#/$defs/soato_region"},
+        "district_soato": {"$ref": "common.json#/$defs/soato_district"},
+        "text": {"type": "string", "maxLength": 500, "description": "Manzil matni (mahalla, ko'cha, mo'ljal)."}
+      }
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["center"],
+      "properties": {
+        "center": {"$ref": "common.json#/$defs/coordinates"},
+        "radius_m": {"type": "integer", "minimum": 10, "maximum": 20000, "description": "Obyekt hududi radiusi, metr."}
+      }
+    },
+    "permit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["number"],
+      "description": "Qurilishga ruxsatnoma. \"Shaffof qurilish\" tizimi bilan bog'lash shu orqali.",
+      "properties": {
+        "number": {"type": "string", "minLength": 1, "maxLength": 100},
+        "issued_on": {"$ref": "common.json#/$defs/date"},
+        "registry_id": {"type": "string", "maxLength": 100, "description": "\"Shaffof qurilish\" tizimidagi ariza/obyekt identifikatori (ma'lum bo'lsa)."}
+      }
+    },
+    "customer": {"$ref": "common.json#/$defs/organization_ref", "description": "Buyurtmachi."},
+    "funding_source": {
+      "type": "string",
+      "enum": ["state_budget", "local_budget", "international", "private", "mixed"],
+      "description": "Moliyalashtirish manbai: respublika byudjeti, mahalliy byudjet, xalqaro moliya institutlari, xususiy, aralash."
+    },
+    "planned_start": {"$ref": "common.json#/$defs/date"},
+    "planned_end": {"$ref": "common.json#/$defs/date"},
+    "site_manager": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["full_name"],
+      "description": "Obyekt uchun mas'ul shaxs (prorab) — inspeksiya bog'lanishi uchun. Shaxsga doir ma'lumot: faqat shu ikki maydon.",
+      "properties": {
+        "full_name": {"type": "string", "minLength": 1, "maxLength": 200},
+        "phone": {"type": "string", "pattern": "^\\+998[0-9]{9}$"}
+      }
+    }
+  }
+}

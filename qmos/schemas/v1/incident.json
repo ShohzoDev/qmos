@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "site.incident — hodisa",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["kind", "severity", "happened_at", "description"],
+  "properties": {
+    "kind": {
+      "type": "string",
+      "enum": ["accident", "safety_violation", "work_stoppage", "material_shortage", "other"],
+      "description": "Baxtsiz hodisa, xavfsizlik qoidasi buzilishi, ish to'xtashi, material yetishmasligi, boshqa."
+    },
+    "severity": {"type": "string", "enum": ["low", "medium", "high"]},
+    "happened_at": {"$ref": "common.json#/$defs/datetime"},
+    "description": {"$ref": "common.json#/$defs/text"},
+    "photo_media_ids": {
+      "type": "array",
+      "maxItems": 20,
+      "uniqueItems": true,
+      "items": {"$ref": "common.json#/$defs/uuid"}
+    }
+  }
+}

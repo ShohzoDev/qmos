@@ -1,0 +1,26 @@
+{
+  "results": [
+    {
+      "event_id": "01928f3a-0000-7a00-8000-000000000001",
+      "index": 0,
+      "status": "duplicate"
+    },
+    {
+      "event_id": "01928f3a-0000-7a00-8000-000000000003",
+      "index": 1,
+      "status": "accepted"
+    },
+    {
+      "event_id": "01928f3a-0000-7a00-8000-000000000004",
+      "index": 2,
+      "status": "rejected",
+      "errors": [
+        {
+          "code": "unknown_site",
+          "path": "/site_id",
+          "message": "Obyekt hali site.profile bilan ro'yxatga olinmagan"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Umumiy turlar",
+  "description": "Bir nechta hodisada qayta ishlatiladigan turlar.",
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "format": "uuid",
+      "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+      "description": "UUID (tavsiya: v7 — vaqt bo'yicha tartiblanadi)."
+    },
+    "stir": {
+      "type": "string",
+      "pattern": "^[0-9]{9}$",
+      "description": "Tashkilotning STIR (INN) raqami — 9 ta raqam."
+    },
+    "local_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[A-Za-z0-9._:-]+$",
+      "description": "Yuboruvchi tizimdagi barqaror identifikator. Bir marta berilgach HECH QACHON o'zgarmaydi va qayta ishlatilmaydi."
+    },
+    "date": {
+      "type": "string",
+      "format": "date",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+      "description": "Sana, YYYY-MM-DD. Mahalliy (Asia/Tashkent) kalendar bo'yicha."
+    },
+    "datetime": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?(Z|[+-][0-9]{2}:[0-9]{2})$",
+      "description": "Vaqt, RFC 3339, vaqt zonasi bilan MAJBURIY (masalan 2026-10-05T09:30:00+05:00)."
+    },
+    "quantity": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,14})(\\.[0-9]{1,6})?$",
+      "description": "Manfiy bo'lmagan o'nli son, MATN ko'rinishida (yaxlitlash xatosi bo'lmasligi uchun). Masalan \"45.5\"."
+    },
+    "unit": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 20,
+      "description": "O'lchov birligi. Tavsiya etilgan qiymatlar: m, m2, m3, t, kg, dona, km, l, kompl, soat."
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2000
+    },
+    "soato_region": {
+      "type": "string",
+      "pattern": "^17[0-9]{2}$",
+      "description": "Viloyat (yoki Toshkent shahri / Qoraqalpog'iston Respublikasi) SOATO kodi — 4 raqam."
+    },
+    "soato_district": {
+      "type": "string",
+      "pattern": "^17[0-9]{5}$",
+      "description": "Tuman (shahar) SOATO kodi — 7 raqam. Birinchi 4 raqami viloyat kodiga teng bo'lishi shart."
+    },
+    "coordinates": {
+      "type": "object",
+      "description": "WGS84 koordinatalari. Chegaralar O'zbekiston hududini qamrab oladi.",
+      "additionalProperties": false,
+      "required": ["lat", "lng"],
+      "properties": {
+        "lat": {"type": "number", "minimum": 37.0, "maximum": 46.0},
+        "lng": {"type": "number", "minimum": 55.0, "maximum": 74.0}
+      }
+    },
+    "organization_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1, "maxLength": 300},
+        "stir": {"$ref": "#/$defs/stir"}
+      }
+    }
+  }
+}

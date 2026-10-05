@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "site.status — obyekt holati o'zgardi",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["status", "effective_on"],
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": ["planned", "active", "suspended", "completed", "cancelled"],
+      "description": "Rejalashtirilgan, ish olib borilmoqda, to'xtatilgan, yakunlangan, bekor qilingan."
+    },
+    "effective_on": {"$ref": "common.json#/$defs/date"},
+    "reason": {"$ref": "common.json#/$defs/text", "description": "Sabab. To'xtatilgan va bekor qilingan holatlarda MAJBURIY."}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"enum": ["suspended", "cancelled"]}}},
+      "then": {"required": ["reason"]}
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "spec_version": "1.0",
+  "event_id": "01928f3a-0000-7a00-8000-000000000003",
+  "event_type": "site.work_plan",
+  "occurred_at": "2026-10-01T09:05:00+05:00",
+  "source": {
+    "system": "buildops",
+    "system_version": "2.0.10"
+  },
+  "organization": {
+    "stir": "305123456"
+  },
+  "site_id": "obyekt-17",
+  "data": {
+    "items": [
+      {
+        "item_id": "wp-101",
+        "code": "E01-01-013",
+        "name": "Gruntni ekskavator bilan qazish",
+        "unit": "m3",
+        "planned_quantity": "4200"
+      },
+      {
+        "item_id": "wp-102",
+        "code": "E06-01-001",
+        "name": "Poydevorga beton quyish B25",
+        "unit": "m3",
+        "planned_quantity": "860.5"
+      },
+      {
+        "item_id": "wp-101",
+        "name": "G'isht terish",
+        "unit": "m3",
+        "planned_quantity": "1250"
+      }
+    ]
+  }
+}

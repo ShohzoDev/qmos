@@ -1,0 +1,233 @@
+openapi: 3.1.0
+info:
+  title: QMOS — Qurilish Monitoringi Ochiq Standarti
+  version: "1.0"
+  summary: Qurilish obyektlari haqidagi jonli ma'lumotni markaziy monitoring tizimiga yuborish standarti.
+  description: |
+    Pudratchi tashkilotlar foydalanadigan istalgan dastur (ERP, hisob tizimi)
+    obyektlari haqidagi ma'lumotni shu standart bo'yicha markaziy monitoring
+    tizimiga yuboradi. Markaz ma'lumotni **qabul qiladi, tekshiradi va
+    o'zgarmas holda saqlaydi**; viloyat va tuman bo'yicha ko'rinish SOATO
+    kodlaridan yig'iladi.
+
+    ## Asosiy qoidalar
+
+    * **Faqat yuborish (push).** Markaz tashkilot tizimiga hech qachon
+      murojaat qilmaydi. Tashkilot nima yuborilishini to'liq nazorat qiladi.
+    * **Ma'lumotni minimallashtirish.** Moliya, ish haqi, narxlar va
+      ishchilarning shaxsiy ma'lumotlari yuborilMAYDI. Standartda ular uchun
+      maydon yo'q — sxema ortiqcha maydonni rad etadi.
+    * **O'zgarmaslik.** Qabul qilingan hodisa o'zgartirilmaydi va
+      o'chirilmaydi. Tuzatish — yangi hodisa, `supersedes` bilan.
+    * **Idempotentlik.** Bir xil `event_id` qayta yuborilsa `duplicate`
+      qaytadi va hech narsa o'zgarmaydi. Shu sabab tarmoq uzilganda qayta
+      yuborish xavfsiz. Bir xil `event_id` boshqa mazmun bilan kelsa —
+      `conflict`.
+    * **Tartib.** Obyekt avval `site.profile` bilan ro'yxatga olinadi.
+      Boshqa hodisalar `occurred_at` bo'yicha tartiblanadi; kechikib kelgan
+      hodisa ham qabul qilinadi.
+
+    ## Autentifikatsiya (HMAC imzo)
+
+    Har bir tashkilotga markaz `key_id` va maxfiy `secret` beradi. Har bir
+    so'rovda uchta sarlavha yuboriladi:
+
+    | Sarlavha | Qiymati |
+    |---|---|
+    | `X-QMOS-Key-Id` | kalit identifikatori |
+    | `X-QMOS-Timestamp` | Unix vaqti, soniya |
+    | `X-QMOS-Signature` | `hex(HMAC-SHA256(secret, imzo_satri))` |
+
+    `imzo_satri = timestamp + "\n" + METHOD + "\n" + path + "\n" + hex(SHA256(tana))`
+
+    Markaz vaqti bilan farq 300 soniyadan oshsa so'rov rad etiladi
+    (qayta yuborish hujumidan himoya). Vaqtni tekshirish uchun `GET /v1/ping`.
+    Python'da tayyor funksiya: `qmos.sign_request()`.
+
+    ## Versiyalash
+
+    `1.x` ichida faqat **ixtiyoriy** maydon va yangi hodisa turi qo'shiladi —
+    eski yuboruvchilar buzilmaydi. Majburiy maydon qo'shish, maydonni olib
+    tashlash yoki ma'nosini o'zgartirish — faqat `2.0` da, yangi `/v2/` yo'li
+    bilan; `/v1/` kamida 12 oy parallel ishlaydi.
+  license:
+    name: CC BY 4.0
+    url: https://creativecommons.org/licenses/by/4.0/
+servers:
+  - url: https://{host}
+    variables:
+      host:
+        default: markaz.example.uz
+        description: Markaziy monitoring tizimi manzili (pilot paytida belgilanadi).
+security:
+  - qmosKeyId: []
+    qmosTimestamp: []
+    qmosSignature: []
+tags:
+  - name: Hodisalar
+  - name: Fayllar
+  - name: Xizmat
+paths:
+  /v1/events:
+    post:
+      tags: [Hodisalar]
+      operationId: postEvents
+      summary: Hodisalar to'plamini yuborish
+      description: |
+        Bir so'rovda 1–500 ta hodisa. Har biri alohida tekshiriladi; javobdagi
+        `results` so'rov tartibida. HTTP 200 — to'plam qayta ishlandi (ichida
+        rad etilganlari bo'lishi mumkin).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './qmos/schemas/v1/batch.json'
+            x-misol-fayli: examples/v1/valid/batch--profile-plan-report.json
+      responses:
+        '200':
+          description: To'plam qayta ishlandi.
+          content:
+            application/json:
+              schema:
+                $ref: './qmos/schemas/v1/batch-result.json'
+              x-misol-fayli: examples/v1/valid/batch-result--mixed.json
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '413':
+          $ref: '#/components/responses/TooLarge'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+        '503':
+          $ref: '#/components/responses/Unavailable'
+  /v1/media:
+    post:
+      tags: [Fayllar]
+      operationId: postMedia
+      summary: Rasm yuklash
+      description: |
+        Rasm fayli (≤ 10 MB) xom holda yuboriladi. Javobdagi `media_id`
+        `site.photo` yoki `site.incident` hodisasida ishlatiladi. Bir xil fayl
+        qayta yuklansa o'sha `media_id` qaytadi.
+      parameters:
+        - name: X-QMOS-Content-SHA256
+          in: header
+          required: true
+          description: Fayl tanasining SHA-256 xeshi (hex, kichik harflar).
+          schema:
+            type: string
+            pattern: '^[0-9a-f]{64}$'
+      requestBody:
+        required: true
+        content:
+          image/jpeg:
+            schema: {type: string, contentMediaType: image/jpeg}
+          image/png:
+            schema: {type: string, contentMediaType: image/png}
+          image/webp:
+            schema: {type: string, contentMediaType: image/webp}
+      responses:
+        '201':
+          description: Fayl saqlandi.
+          content:
+            application/json:
+              schema:
+                $ref: './qmos/schemas/v1/media-result.json'
+              x-misol-fayli: examples/v1/valid/media-result--jpeg.json
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '413':
+          $ref: '#/components/responses/TooLarge'
+        '415':
+          description: Fayl turi qo'llab-quvvatlanmaydi (faqat JPEG, PNG, WebP).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorBody'
+  /v1/ping:
+    get:
+      tags: [Xizmat]
+      operationId: ping
+      summary: Kalit va soatni tekshirish
+      responses:
+        '200':
+          description: Kalit to'g'ri.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [organization_stir, server_time, spec_versions]
+                properties:
+                  organization_stir:
+                    type: string
+                  server_time:
+                    type: string
+                    format: date-time
+                  spec_versions:
+                    type: array
+                    items: {type: string}
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  securitySchemes:
+    qmosKeyId:
+      type: apiKey
+      in: header
+      name: X-QMOS-Key-Id
+    qmosTimestamp:
+      type: apiKey
+      in: header
+      name: X-QMOS-Timestamp
+    qmosSignature:
+      type: apiKey
+      in: header
+      name: X-QMOS-Signature
+      description: HMAC-SHA256 imzo — yuqoridagi "Autentifikatsiya" bo'limiga qarang.
+  schemas:
+    ErrorBody:
+      type: object
+      additionalProperties: false
+      required: [errors]
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: './qmos/schemas/v1/error.json'
+  responses:
+    BadRequest:
+      description: So'rov tanasi JSON emas yoki to'plam tuzilishi noto'g'ri (masalan 500 tadan ortiq hodisa).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Unauthorized:
+      description: Kalit noma'lum, imzo noto'g'ri yoki vaqt farqi 300 soniyadan katta.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    TooLarge:
+      description: So'rov hajmi chegaradan katta (hodisalar — 5 MB, fayl — 10 MB).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    RateLimited:
+      description: Juda ko'p so'rov. `Retry-After` sarlavhasidagi soniyadan keyin qayta yuboring.
+      headers:
+        Retry-After:
+          schema: {type: integer}
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorBody'
+    Unavailable:
+      description: Markaz vaqtincha ishlamayapti. Butun to'plamni keyinroq qayta yuboring.
+      headers:
+        Retry-After:
+          schema: {type: integer}

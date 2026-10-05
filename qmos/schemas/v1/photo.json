@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "site.photo — fotofiksatsiya",
+  "description": "Obyektdan surat. Rasm faylining o'zi avval POST /v1/media orqali yuklanadi; bu hodisa unga `media_id` va `sha256` orqali havola qiladi (markaz ikkalasi mosligini tekshiradi).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["media_id", "sha256", "taken_at"],
+  "properties": {
+    "media_id": {"$ref": "common.json#/$defs/uuid"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "taken_at": {"$ref": "common.json#/$defs/datetime"},
+    "location": {"$ref": "common.json#/$defs/coordinates", "description": "Suratga olingan joy (qurilma GPS'i)."},
+    "caption": {"type": "string", "maxLength": 500}
+  }
+}

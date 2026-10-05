@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "site.work_plan — rejalashtirilgan ish hajmlari",
+  "description": "Obyekt bo'yicha FIZIK ish hajmlari rejasi (smeta qatorlari, narxsiz). Har safar to'liq ro'yxat yuboriladi va oldingisini almashtiradi. Bajarilish foizi shu reja va kunlik hisobotlardagi hajmlardan hisoblanadi.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["items"],
+  "properties": {
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5000,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["item_id", "name", "unit", "planned_quantity"],
+        "properties": {
+          "item_id": {"$ref": "common.json#/$defs/local_id"},
+          "code": {"type": "string", "maxLength": 50, "description": "Smeta/normativ kodi (bo'lsa)."},
+          "name": {"type": "string", "minLength": 1, "maxLength": 500},
+          "unit": {"$ref": "common.json#/$defs/unit"},
+          "planned_quantity": {"$ref": "common.json#/$defs/quantity"}
+        }
+      }
+    }
+  }
+}

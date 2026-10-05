@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Hodisa (konvert)",
+  "description": "Markazga yuboriladigan har bir xabar shu konvertda bo'ladi. `data` tarkibi `event_type` ga qarab belgilanadi. Hodisa markazda O'ZGARMAS saqlanadi: xatoni tuzatish uchun yangi hodisa yuboriladi va `supersedes` da eskisining `event_id` si ko'rsatiladi.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["spec_version", "event_id", "event_type", "occurred_at", "source", "organization", "site_id", "data"],
+  "properties": {
+    "spec_version": {"type": "string", "pattern": "^1\\.[0-9]+$", "description": "Standart versiyasi (1.x). Markaz 1.x ning barcha kichik versiyalarini qabul qiladi."},
+    "event_id": {"$ref": "common.json#/$defs/uuid", "description": "Hodisaning global noyob identifikatori. Takroriy yuborishda o'zgarmaydi (idempotentlik)."},
+    "event_type": {
+      "type": "string",
+      "enum": ["site.profile", "site.status", "site.work_plan", "site.daily_report", "site.photo", "site.incident"]
+    },
+    "occurred_at": {"$ref": "common.json#/$defs/datetime", "description": "Hodisa yuboruvchi tizimda qayd etilgan vaqt."},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "system_version"],
+      "description": "Yuboruvchi dastur.",
+      "properties": {
+        "system": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,39}$", "description": "Dastur kodi (markazda ro'yxatdan o'tgan), masalan \"buildops\"."},
+        "system_version": {"type": "string", "minLength": 1, "maxLength": 40}
+      }
+    },
+    "organization": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stir"],
+      "description": "Pudratchi tashkilot. STIR API kaliti egasiga teng bo'lishi shart.",
+      "properties": {
+        "stir": {"$ref": "common.json#/$defs/stir"}
+      }
+    },
+    "site_id": {"$ref": "common.json#/$defs/local_id", "description": "Obyektning yuboruvchi tizimdagi identifikatori. Markazda obyekt (organization.stir, site_id) jufti bilan aniqlanadi."},
+    "supersedes": {"$ref": "common.json#/$defs/uuid", "description": "Shu hodisa tuzatayotgan oldingi hodisa. U bilan bir xil event_type, organization va site_id bo'lishi shart."},
+    "data": {"type": "object"}
+  },
+  "allOf": [
+    {"if": {"properties": {"event_type": {"const": "site.profile"}}, "required": ["event_type"]}, "then": {"properties": {"data": {"$ref": "site-profile.json"}}}},
+    {"if": {"properties": {"event_type": {"const": "site.status"}}, "required": ["event_type"]}, "then": {"properties": {"data": {"$ref": "site-status.json"}}}},
+    {"if": {"properties": {"event_type": {"const": "site.work_plan"}}, "required": ["event_type"]}, "then": {"properties": {"data": {"$ref": "work-plan.json"}}}},
+    {"if": {"properties": {"event_type": {"const": "site.daily_report"}}, "required": ["event_type"]}, "then": {"properties": {"data": {"$ref": "daily-report.json"}}}},
+    {"if": {"properties": {"event_type": {"const": "site.photo"}}, "required": ["event_type"]}, "then": {"properties": {"data": {"$ref": "photo.json"}}}},
+    {"if": {"properties": {"event_type": {"const": "site.incident"}}, "required": ["event_type"]}, "then": {"properties": {"data": {"$ref": "incident.json"}}}}
+  ]
+}

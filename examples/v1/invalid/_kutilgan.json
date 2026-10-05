@@ -1,0 +1,78 @@
+{
+  "event--salary-field.json": {
+    "code": "schema",
+    "path": "/data/workforce"
+  },
+  "event--worker-names.json": {
+    "code": "schema",
+    "path": "/data/workforce"
+  },
+  "event--contract-price.json": {
+    "code": "schema",
+    "path": "/data/items/0"
+  },
+  "event--district-not-in-region.json": {
+    "code": "semantic",
+    "path": "/data/address/district_soato"
+  },
+  "event--end-before-start.json": {
+    "code": "semantic",
+    "path": "/data/planned_end"
+  },
+  "event--no-timezone.json": {
+    "code": "schema",
+    "path": "/occurred_at"
+  },
+  "event--suspended-without-reason.json": {
+    "code": "schema",
+    "path": "/data"
+  },
+  "event--verified-more-than-present.json": {
+    "code": "semantic",
+    "path": "/data/workforce/verified_present"
+  },
+  "event--quantity-as-number.json": {
+    "code": "schema",
+    "path": "/data/work_done/0/quantity"
+  },
+  "event--duplicate-plan-item.json": {
+    "code": "semantic",
+    "path": "/data/items/2/item_id"
+  },
+  "event--self-supersedes.json": {
+    "code": "semantic",
+    "path": "/supersedes"
+  },
+  "event--unknown-type.json": {
+    "code": "schema",
+    "path": "/event_type"
+  },
+  "event--outside-uzbekistan.json": {
+    "code": "schema",
+    "path": "/data/location/center/lat"
+  },
+  "event--impossible-date.json": {
+    "code": "schema",
+    "path": "/data/date"
+  },
+  "event--issue-without-note.json": {
+    "code": "schema",
+    "path": "/data/quality"
+  },
+  "event--report-date-after-event.json": {
+    "code": "semantic",
+    "path": "/data/date"
+  },
+  "event--bad-stir.json": {
+    "code": "schema",
+    "path": "/organization/stir"
+  },
+  "event--major-version-2.json": {
+    "code": "schema",
+    "path": "/spec_version"
+  },
+  "batch--empty.json": {
+    "code": "schema",
+    "path": "/events"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Hodisalar to'plami (javob)",
+  "description": "Har bir yuborilgan hodisa uchun bitta natija, so'rovdagi tartibda. `accepted` va `duplicate` — yuboruvchi hodisani yuborilgan deb belgilaydi. `rejected` — qayta yuborish foydasiz, xatoni tuzatish kerak. `retry` — markaz vaqtincha qabul qila olmadi, keyinroq xuddi shu hodisani qayta yuborish kerak.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["results"],
+  "properties": {
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["event_id", "status"],
+        "properties": {
+          "event_id": {"type": "string", "description": "So'rovdagi event_id (u noto'g'ri bo'lsa ham, borligicha qaytariladi)."},
+          "index": {"type": "integer", "minimum": 0, "description": "Hodisaning so'rovdagi tartib raqami."},
+          "status": {"type": "string", "enum": ["accepted", "duplicate", "rejected", "retry"]},
+          "errors": {
+            "type": "array",
+            "items": {"$ref": "error.json"}
+          }
+        }
+      }
+    }
+  }
+}

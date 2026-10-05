@@ -1,0 +1,51 @@
+{
+  "spec_version": "1.0",
+  "event_id": "01928f3a-0000-7a00-8000-000000000005",
+  "event_type": "site.daily_report",
+  "occurred_at": "2026-10-03T08:20:00+05:00",
+  "source": {
+    "system": "buildops",
+    "system_version": "2.0.10"
+  },
+  "organization": {
+    "stir": "305123456"
+  },
+  "site_id": "obyekt-17",
+  "data": {
+    "date": "2026-10-02",
+    "workforce": {
+      "present": 23,
+      "verified_present": 21
+    },
+    "equipment": [
+      {
+        "type": "Ekskavator",
+        "plate_number": "70A123BC",
+        "engine_hours": 7.5,
+        "source": "gps"
+      },
+      {
+        "type": "Samosval",
+        "plate_number": "70B456CD",
+        "source": "manual"
+      }
+    ],
+    "work_done": [
+      {
+        "item_id": "wp-101",
+        "quantity": "310",
+        "unit": "m3"
+      },
+      {
+        "item_id": "wp-102",
+        "quantity": "54.5",
+        "unit": "m3"
+      }
+    ],
+    "quality": {
+      "status": "ok"
+    },
+    "note": "Beton hajmi tuzatildi: kecha 45.5 deb xato kiritilgan"
+  },
+  "supersedes": "01928f3a-0000-7a00-8000-000000000004"
+}

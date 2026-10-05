@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "site.daily_report — kunlik hisobot",
+  "description": "Bitta obyektning bitta kundagi holati. Bir kun uchun qayta yuborilsa (yangi event_id, `supersedes` bilan) — markaz eng oxirgisini joriy deb oladi, eskisi tarixda saqlanadi. Ishchilar ISM-SHARIFI yuborilmaydi — faqat sonlar.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["date", "workforce", "equipment", "work_done"],
+  "properties": {
+    "date": {"$ref": "common.json#/$defs/date"},
+    "workforce": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["present"],
+      "properties": {
+        "present": {"type": "integer", "minimum": 0, "maximum": 100000, "description": "Shu kuni obyektda ishlaganlar soni."},
+        "verified_present": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100000,
+          "description": "Ulardan joylashuv (geofence) va/yoki surat bilan tasdiqlangan davomat orqali qayd etilganlari. Qo'lda kiritilgan son bilan farqi — ishonchlilik ko'rsatkichi."
+        }
+      }
+    },
+    "equipment": {
+      "type": "array",
+      "maxItems": 2000,
+      "description": "Shu kuni obyektda ishlagan texnika. Bo'sh ro'yxat = texnika ishlamagan.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "source"],
+        "properties": {
+          "type": {"type": "string", "minLength": 1, "maxLength": 100, "description": "Texnika turi (Ekskavator, Samosval, Avtogreyder...)."},
+          "plate_number": {"type": "string", "maxLength": 20, "description": "Davlat raqami (bo'lsa)."},
+          "engine_hours": {"type": "number", "minimum": 0, "maximum": 24},
+          "source": {"type": "string", "enum": ["manual", "gps"], "description": "Ma'lumot manbai: qo'lda kiritilgan yoki GPS-treker."}
+        }
+      }
+    },
+    "work_done": {
+      "type": "array",
+      "maxItems": 5000,
+      "description": "Shu kuni bajarilgan ish hajmlari. `item_id` — site.work_plan dagi qator.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["item_id", "quantity", "unit"],
+        "properties": {
+          "item_id": {"$ref": "common.json#/$defs/local_id"},
+          "quantity": {"$ref": "common.json#/$defs/quantity"},
+          "unit": {"$ref": "common.json#/$defs/unit"}
+        }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {"type": "string", "enum": ["ok", "issue"]},
+        "note": {"$ref": "common.json#/$defs/text"}
+      },
+      "allOf": [{"if": {"properties": {"status": {"const": "issue"}}}, "then": {"required": ["note"]}}]
+    },
+    "note": {"$ref": "common.json#/$defs/text"}
+  }
+}

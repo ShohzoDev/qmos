@@ -1,0 +1,45 @@
+{
+  "spec_version": "1.0",
+  "event_id": "01928f3a-0000-7a00-8000-000000000001",
+  "event_type": "site.profile",
+  "occurred_at": "2026-10-01T09:00:00+05:00",
+  "source": {
+    "system": "buildops",
+    "system_version": "2.0.10"
+  },
+  "organization": {
+    "stir": "305123456"
+  },
+  "site_id": "obyekt-17",
+  "data": {
+    "name": "Namuna tumani, 4-sonli maktabni qayta qurish",
+    "category": "building_public",
+    "address": {
+      "region_soato": "1710",
+      "district_soato": "1710233",
+      "text": "Mustaqillik MFY, Navro'z ko'chasi 12"
+    },
+    "location": {
+      "center": {
+        "lat": 39.0347,
+        "lng": 66.5722
+      },
+      "radius_m": 250
+    },
+    "permit": {
+      "number": "QR-2026-004512",
+      "issued_on": "2026-08-20"
+    },
+    "customer": {
+      "name": "Namuna tumani hokimligi",
+      "stir": "201234567"
+    },
+    "funding_source": "local_budget",
+    "planned_start": "2026-09-01",
+    "planned_end": "2026-08-01",
+    "site_manager": {
+      "full_name": "Karimov Anvar",
+      "phone": "+998901234567"
+    }
+  }
+}
